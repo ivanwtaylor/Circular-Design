@@ -1,0 +1,1177 @@
+{UTF-8}
+LEARNING RATE=
+	0.0795578
+	~	Dmnl
+	~		|
+
+manufacturing cost adjustment=
+	MANUFACTURING COST CHANGE RATE* MIN(maximum price, MAX(minimum price, manufacturing cost factor\
+		))
+	~	Dollars/(Year*Units)
+	~		|
+
+R and D investment=
+	R AND D BASE+R AND D PROFIT SENSITIVITY*MAX(0, profit )+R AND D PRESSURE SENSITIVITY\
+		*pressure for systemic change
+	~	Dollars/Year
+	~		|
+
+R AND D NORMAL=
+	DELAY1I(BAU R AND D NORMAL+STEP(BAU R AND D NORMAL*(SENSITIVITY ANALYSIS MULTIPLIER-\
+		1), IMPLEMENTATION DATE ), IMPLEMENTATION TIME
+	 , BAU R AND D NORMAL )
+	~	Dollars/Year
+	~		|
+
+annual profit=
+	profit
+	~	Dollars/Year
+	~		|
+
+R AND D PROFIT SENSITIVITY=
+	DELAY1I(BAU R AND D PROFIT SENSITIVITY+STEP(BAU R AND D PROFIT SENSITIVITY*(SENSITIVITY ANALYSIS MULTIPLIER\
+		-1), IMPLEMENTATION DATE
+	 ), IMPLEMENTATION TIME , BAU R AND D PROFIT SENSITIVITY )
+	~	Dmnl
+	~		|
+
+r and d push=
+	R and D investment/(R AND D NORMAL+R and D investment)
+	~	Dmnl
+	~		|
+
+SENSITIVITY ANALYSIS MULTIPLIER=
+	1
+	~	Dmnl
+	~		|
+
+REFILL INCENTIVE EFFECT=
+	DELAY1I(BAU REFILL INCENTIVE EFFECT+STEP(BAU REFILL INCENTIVE EFFECT*(SENSITIVITY ANALYSIS MULTIPLIER\
+		-1), IMPLEMENTATION DATE
+	 ), IMPLEMENTATION TIME , BAU REFILL INCENTIVE EFFECT )
+	~	Dmnl
+	~		|
+
+RECOVERY DECAY RATE=
+	DELAY1I(BAU RECOVERY DECAY RATE+STEP(BAU RECOVERY DECAY RATE*(SENSITIVITY ANALYSIS MULTIPLIER\
+		-1), IMPLEMENTATION DATE )
+	, IMPLEMENTATION TIME , BAU RECOVERY DECAY RATE )
+	~	1/Year
+	~		|
+
+circular design build=
+	CIRCULAR DESIGN GAIN * (design upgrades norm + r and d push) * (1 - Circular Design)
+	~	Dmnl/Year
+	~		|
+
+BAU CIRCULAR DESIGN DECAY RATE=
+	0.0112563
+	~	1/Year
+	~		|
+
+recovery decay=
+	Material Recovery*RECOVERY DECAY RATE
+	~	Dmnl/Year
+	~		|
+
+desired capital investment=
+	MAX(0,profit*INVEST FRACTION)
+	~	Dollars/Year
+	~		|
+
+RECOVERY GAIN=
+	DELAY1I(BAU RECOVERY GAIN+STEP(BAU RECOVERY GAIN*(SENSITIVITY ANALYSIS MULTIPLIER-1)\
+		, IMPLEMENTATION DATE ), IMPLEMENTATION TIME
+	 , BAU RECOVERY GAIN )
+	~	1/Year
+	~		|
+
+INVEST FRACTION=
+	DELAY1I(BAU INVEST FRACTION+STEP(BAU INVEST FRACTION*(SENSITIVITY ANALYSIS MULTIPLIER\
+		-1), IMPLEMENTATION DATE ), IMPLEMENTATION TIME
+	 , BAU INVEST FRACTION )
+	~	Dmnl
+	~		|
+
+IMPLEMENTATION TIME=
+	10
+	~	Year
+	~		|
+
+Retained Earnings= INTEG (
+	annual profit,
+		INITIAL RETAINED EARNINGS)
+	~	Dollars
+	~		|
+
+IMPLEMENTATION DATE=
+	2025
+	~	Year
+	~		|
+
+up front customers costs=
+	BASE UPFRONT*Price/BASE PRICE* (1 - REFILL INCENTIVE EFFECT*MIN( 1, refillable packaging adoption\
+		))
+	~	Dollars/Units
+	~		|
+
+CIRCULAR DESIGN DECAY RATE=
+	DELAY1I(BAU CIRCULAR DESIGN DECAY RATE+STEP(BAU CIRCULAR DESIGN DECAY RATE*(SENSITIVITY ANALYSIS MULTIPLIER\
+		-1), IMPLEMENTATION DATE
+	 ), IMPLEMENTATION TIME , BAU CIRCULAR DESIGN DECAY RATE)
+	~	1/Year
+	~		|
+
+CIRCULAR DESIGN GAIN=
+	DELAY1I(BAU CIRCULAR DESIGN GAIN+STEP(BAU CIRCULAR DESIGN GAIN*(SENSITIVITY ANALYSIS MULTIPLIER\
+		-1), IMPLEMENTATION DATE
+	 ), IMPLEMENTATION TIME , BAU CIRCULAR DESIGN GAIN )
+	~	1/Year
+	~		|
+
+recovery build=
+	RECOVERY GAIN*Circular Design*(1-Material Recovery)
+	~	Dmnl/Year
+	~		|
+
+circular design decay=
+	Circular Design*CIRCULAR DESIGN DECAY RATE
+	~	Dmnl/Year
+	~		|
+
+manufacturing costs=
+	MAX(BASE COST*BASE COST MULTIPLER, (BASE COST*(1-LEARNING RATE*LN(1+market adoption index\
+		))+raw material cost addition
+	))
+	~	Dollars/Units
+	~		|
+
+INITIAL RETAINED EARNINGS=
+	0
+	~	Dollars
+	~		|
+
+R AND D PRESSURE SENSITIVITY=
+	DELAY1I(BAU R AND D PRESSURE SENSITIVITY+STEP(BAU R AND D PRESSURE SENSITIVITY*(SENSITIVITY ANALYSIS MULTIPLIER\
+		-1), IMPLEMENTATION DATE
+	 ), IMPLEMENTATION TIME , BAU R AND D PRESSURE SENSITIVITY )
+	~	Dollars/Year
+	~		|
+
+VIRGIN EMISSIONS PER TON=
+	2.00017
+	~	Tons CO2/Tons
+	~		|
+
+INITIAL CUMULATIVE CO2 EMISSIONS=
+	0
+	~	Tons CO2
+	~		|
+
+RECOVERED EMISSIONS PER TON=
+	0.67946
+	~	Tons CO2/Tons
+	~		|
+
+recovered material demand=
+	Performance*total material demand
+	~	Tons/Year
+	~		|
+
+total material demand=
+	sales*VIRGIN PER UNIT
+	~	Tons/Year
+	~		|
+
+CO2 emissions per year=
+	recovered material demand*RECOVERED EMISSIONS PER TON+virgin material demand*VIRGIN EMISSIONS PER TON
+	~	Tons CO2/Year
+	~		|
+
+Cumulative CO2 Emissions= INTEG (
+	CO2 emissions per year,
+		INITIAL CUMULATIVE CO2 EMISSIONS)
+	~	Tons CO2
+	~		|
+
+adoption rate=
+	ADOPTION SENSITIVITY *( performance effect on adoption) * affordability*(BASE PRICE/\
+		Price)^DEMAND PRICE ELASTICITY* ((POTENTIAL MARKET
+	- Market Adoption)/ADOPTION TIME
+	)
+	~	Customers/Year
+	~		|
+
+RAW MATERIAL PRICE SENS=
+	0.0507216
+	~	Dmnl
+	~		|
+
+maximum price=
+	MAXIMUM PRICE MULTIPLER*BASE PRICE
+	~	Dollars/Units
+	~		|
+
+MAXIMUM PRICE MULTIPLER=
+	1.52813
+	~	Dmnl
+	~		|
+
+revenue=
+	sales*Price
+	~	Dollars/Year
+	~		|
+
+minimum price=
+	MINIMUM PRICE MULTIPLER*BASE PRICE
+	~	Dollars/Units
+	~		|
+
+MINIMUM PRICE MULTIPLER=
+	0.924867
+	~	Dmnl
+	~		|
+
+PRICE ADJUSTMENT RATE=
+	0.592972
+	~	1/Year
+	~		|
+
+raw material prices=
+	BASE RAW MATERIAL PRICES*(1+RAW MATERIAL PRICE SENS*LN(1+(virgin material demand/BASELINE VIRGIN DEMAND\
+		)))
+	~	Dollars/Tons
+	~		|
+
+price outflow=
+	Price*PRICE OUTFLOW RATE
+	~	Dollars/(Year*Units)
+	~		|
+
+PRICE OUTFLOW RATE=
+	1.18456
+	~	1/Year
+	~		|
+
+Price= INTEG (
+	manufacturing cost adjustment+price ajustment-price outflow,
+		BASE PRICE)
+	~	Dollars/Units
+	~		|
+
+manufacturing cost factor=
+	manufacturing costs*DEMAND PRICE ELASTICITY/(DEMAND PRICE ELASTICITY-1)
+	~	Dollars/Units
+	~		|
+
+price ajustment=
+	Price*PRICE ADJUSTMENT RATE
+	~	Dollars/(Year*Units)
+	~		|
+
+MANUFACTURING COST CHANGE RATE=
+	0.361219
+	~	1/Year
+	~		|
+
+refillable packaging adoption=
+	MIN(1, Capital Investment/(CAPITAL NORM + Capital Investment))
+	~	Dmnl
+	~		|
+
+affordability=
+	1/(1+up front customers costs/COST NORM)
+	~	Dmnl
+	~		|
+
+BASE PRICE=
+	455.834
+	~	Dollars/Units
+	~		|
+
+BASE COST MULTIPLER=
+	0.298979
+	~	Dmnl
+	~		|
+
+DEMAND PRICE ELASTICITY=
+	2.86411
+	~	Dmnl
+	~		|
+
+MATERIAL COST SHARE=
+	0.269673
+	~	Tons/Units
+	~	Share of raw material costs in unit cost
+	|
+
+BASE RAW MATERIAL PRICES=
+	89.9699
+	~	Dollars/Tons
+	~	Reference price
+	|
+
+BASE UPFRONT=
+	188.773
+	~	Dollars/Units
+	~	Baseline up-front customer cost
+	|
+
+BASELINE VIRGIN DEMAND=
+	100.482
+	~	Tons/Year
+	~	Reference demand
+	|
+
+Capital Investment= INTEG (
+	change in capital investment,
+		INITIAL CAPITAL INVESTMENT)
+	~	Dollars/Year
+	~		|
+
+CAPITAL NORM=
+	796.285
+	~	Dollars/Year
+	~	Scale for leasing availability
+	|
+
+change in capital investment=
+	(desired capital investment-Capital Investment)/INVEST DELAY
+	~	Dollars/Year/Year
+	~		|
+
+change in inter firm trust=
+	(desired inter firm trust-Inter Firm Trust)/TRUST DELAY
+	~	Dmnl/Year
+	~		|
+
+sales=
+	adoption rate*UNITS PER CUSTOMER*customer satisfaction
+	~	Units/Year
+	~		|
+
+TRUST BASE=
+	0.2
+	~	Dmnl
+	~	Baseline trust
+	|
+
+TRUST DELAY=
+	5
+	~	Year
+	~		|
+
+Inter Firm Trust= INTEG (
+	change in inter firm trust,
+		TRUST BASE)
+	~	Dmnl
+	~		|
+
+COOP BASE=
+	0.1
+	~	Dmnl
+	~	Baseline cooperation
+	|
+
+COOP TRUST SENS=
+	0.799858
+	~	Dmnl
+	~	Sensitivity of cooperation to trust
+	|
+
+cooperation in logistics=
+	COOP BASE + COOP TRUST SENS*Inter Firm Trust
+	~	Dmnl
+	~	Collaboration proxy driven by trust
+	|
+
+COST NORM=
+	1057.76
+	~	Dollars/Units
+	~	Scaling for affordability
+	|
+
+INITIAL CAPITAL INVESTMENT=
+	0
+	~	Dollars/Year
+	~		|
+
+raw material cost addition=
+	MATERIAL COST SHARE*raw material prices
+	~	Dollars/Units
+	~	Adds a materials component to unit cost
+	|
+
+TRUST SENSITIVITY TO PROFIT=
+	0.599728
+	~	Dmnl
+	~	Trust sensitivity to profit
+	|
+
+desired inter firm trust=
+	TRUST BASE + TRUST SENSITIVITY TO PROFIT * MIN(1, MAX(0, profit)/PROFIT NORM)
+	~	Dmnl
+	~		|
+
+virgin material demand=
+	sales*VIRGIN PER UNIT*(1-Material Recovery)
+	~	Tons/Year
+	~		|
+
+BAU REFILL INCENTIVE EFFECT=
+	0.4998
+	~	Dmnl
+	~	Max fractional reduction in up-front cost
+	|
+
+BAU INVEST FRACTION=
+	0.00149599
+	~	Dmnl
+	~	Share of profit invested
+	|
+
+INVEST DELAY=
+	0.500737
+	~	Year
+	~		|
+
+VIRGIN PER UNIT=
+	0.994115
+	~	Tons/Units
+	~	Virgin tonnage per unit sold
+	|
+
+PROFIT NORM=
+	1000
+	~	Dollars/Year
+	~	Profit scale for normalization
+	|
+
+profit=
+	revenue-sales*manufacturing costs
+	~	Dollars/Year
+	~		|
+
+performance improvement=
+	PERFORMANCE GAIN*design upgrades*(1-Performance)
+	~	Dmnl/Year
+	~		|
+
+market adoption index=
+	Market Adoption/INITIAL MARKET ADOPTION
+	~	Dmnl
+	~		|
+
+ADOPTION SENSITIVITY=
+	1.43663
+	~	Dmnl
+	~		|
+
+ADOPTION TIME=
+	7.49081
+	~	Year
+	~		|
+
+AVERAGE LIFE=
+	0.892903
+	~	Year
+	~		|
+
+BASE COST=
+	252.231
+	~	Dollars/Units
+	~		|
+
+BAU CIRCULAR DESIGN GAIN=
+	0.0188517
+	~	1/Year
+	~		|
+
+Circular Design= INTEG (
+	circular design build-circular design decay,
+		INITIAL CIRCULAR DESIGN)
+	~	Dmnl
+	~		|
+
+customer satisfaction=
+	Performance
+	~	Dmnl
+	~		|
+
+DATA PER USER=
+	2.10134
+	~	Dmnl/(Customers*Year)
+	~		|
+
+design upgrades=
+	DESIGN UPGRADE GAIN*performance data
+	~	Dmnl/Year
+	~		|
+
+design upgrades norm=
+	design upgrades/(DESIGN UPGRADE REFERENCE+design upgrades)
+	~	Dmnl
+	~		|
+
+DESIGN UPGRADE GAIN=
+	0.000842948
+	~	Dmnl
+	~		|
+
+DESIGN UPGRADE REFERENCE=
+	1.57138
+	~	Dmnl/Year
+	~		|
+
+ECO EFFICIENCY BASE=
+	0.199904
+	~	Dmnl
+	~		|
+
+eco efficiency=
+	ECO EFFICIENCY BASE+ECO EFFICIENCY SENSITIVITY*Material Recovery
+	~	Dmnl
+	~		|
+
+ECO EFFICIENCY SENSITIVITY=
+	0.800143
+	~	Dmnl
+	~		|
+
+INITIAL CIRCULAR DESIGN=
+	0.025
+	~	Dmnl
+	~		|
+
+INITIAL MARKET ADOPTION=
+	9.06245
+	~	Customers
+	~		|
+
+INITIAL MATERIAL RECOVERY=
+	0.005
+	~	Dmnl
+	~		|
+
+INITIAL PERFORMANCE=
+	0.339528
+	~	Dmnl
+	~		|
+
+Market Adoption= INTEG (
+	adoption rate-retirement rate,
+		INITIAL MARKET ADOPTION)
+	~	Customers
+	~		|
+
+POTENTIAL MARKET=
+	15360.5
+	~	Customers
+	~		|
+
+Material Recovery= INTEG (
+	recovery build-recovery decay,
+		INITIAL MATERIAL RECOVERY)
+	~	Dmnl
+	~		|
+
+PERFORMANCE DECAY RATE=
+	0.0154464
+	~	1/Year
+	~		|
+
+PERFORMANCE GAIN=
+	0.0119512
+	~	Dmnl
+	~		|
+
+PERFORMANCE WEIGHT=
+	2.24239
+	~	Dmnl
+	~		|
+
+Performance= INTEG (
+	performance improvement-performance decay,
+		INITIAL PERFORMANCE)
+	~	Dmnl
+	~		|
+
+performance data=
+	Market Adoption*DATA PER USER
+	~	Dmnl/Year
+	~		|
+
+performance decay=
+	Performance*PERFORMANCE DECAY RATE
+	~	Dmnl/Year
+	~		|
+
+performance effect on adoption=
+	MIN(1, Performance^PERFORMANCE WEIGHT)
+	~	Dmnl
+	~		|
+
+pressure for systemic change=
+	PRESSURE GAIN*eco efficiency
+	~	Dmnl
+	~		|
+
+PRESSURE GAIN=
+	0.989224
+	~	Dmnl
+	~		|
+
+R AND D BASE=
+	9.96088
+	~	Dollars/Year
+	~		|
+
+BAU R AND D NORMAL=
+	75.4375
+	~	Dollars/Year
+	~		|
+
+BAU R AND D PRESSURE SENSITIVITY=
+	5.9944
+	~	Dollars/Year
+	~		|
+
+BAU R AND D PROFIT SENSITIVITY=
+	0.0349845
+	~	Dmnl
+	~		|
+
+BAU RECOVERY DECAY RATE=
+	0.0153613
+	~	1/Year
+	~		|
+
+BAU RECOVERY GAIN=
+	0.0259351
+	~	1/Year
+	~		|
+
+retirement rate=
+	Market Adoption/AVERAGE LIFE
+	~	Customers/Year
+	~		|
+
+UNITS PER CUSTOMER=
+	398.896
+	~	Units/Customers
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 2035
+	~	Year
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 2000
+	~	Year
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP 
+	~	Year [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 0.0625
+	~	Year [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Market Adoption
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,100,0
+10,1,POTENTIAL MARKET,315,92,42,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,Market Adoption,606,160,43,29,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,3,48,411,158,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,4,6,3,100,0,0,22,0,192,0,-1--1--1,,1|(453,158)|
+1,5,6,2,4,0,0,22,0,192,0,-1--1--1,,1|(530,158)|
+11,6,0,492,158,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,7,adoption rate,492,195,43,29,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,8,48,787,162,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,9,11,2,100,0,0,22,0,192,0,-1--1--1,,1|(674,162)|
+1,10,11,8,4,0,0,22,0,192,0,-1--1--1,,1|(744,162)|
+11,11,0,706,162,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,12,retirement rate,706,199,53,29,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,13,INITIAL MARKET ADOPTION,650,48,72,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,14,13,2,1,0,0,0,0,192,1,-1--1--1,,1|(614,83)|
+10,15,ADOPTION SENSITIVITY,615,306,46,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,16,PERFORMANCE WEIGHT,124,162,60,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,17,ADOPTION TIME,392,315,42,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,18,AVERAGE LIFE,862,278,53,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,19,18,12,1,0,0,0,0,192,0,-1--1--1,,1|(776,269)|
+1,20,2,12,1,0,0,0,0,192,0,-1--1--1,,1|(620,217)|
+1,21,1,7,1,0,0,0,0,192,0,-1--1--1,,1|(331,151)|
+1,22,2,7,1,0,0,0,0,192,0,-1--1--1,,1|(560,203)|
+1,23,17,7,1,0,0,0,0,192,0,-1--1--1,,1|(443,285)|
+10,24,performance effect on adoption,296,215,102,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,25,Performance,206,94,60,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,26,15,7,1,0,0,0,0,192,0,-1--1--1,,1|(544,283)|
+1,27,25,24,1,0,0,0,0,192,0,-1--1--1,,1|(208,139)|
+1,28,16,24,1,0,0,0,0,192,0,-1--1--1,,1|(148,193)|
+1,29,24,7,1,0,0,0,0,192,0,-1--1--1,,1|(420,235)|
+10,30,BASE PRICE,366,18,58,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,31,30,7,1,0,0,0,0,192,0,-1--1--1,,1|(379,85)|
+10,32,DEMAND PRICE ELASTICITY,530,393,76,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,33,32,7,1,0,0,0,0,192,0,-1--1--1,,1|(499,302)|
+10,34,affordability,525,69,67,15,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,35,34,7,1,0,0,0,0,192,0,-1--1--1,,1|(482,108)|
+10,36,Price,491,17,35,15,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,37,36,7,1,0,0,0,0,192,0,-1--1--1,,1|(439,80)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Performance
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,100,0
+10,1,Performance,684,198,60,22,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,2,48,426,197,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,3,5,2,100,0,0,22,0,192,0,-1--1--1,,1|(480,197)|
+1,4,5,1,4,0,0,22,0,192,0,-1--1--1,,1|(580,197)|
+11,5,0,530,197,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,6,performance improvement,530,234,63,29,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,7,48,922,198,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,8,10,1,100,0,0,22,0,192,0,-1--1--1,,1|(783,198)|
+1,9,10,7,4,0,0,22,0,192,0,-1--1--1,,1|(873,198)|
+11,10,0,828,198,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,11,performance decay,828,235,60,29,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,12,INITIAL PERFORMANCE,761,87,70,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,13,12,1,1,0,0,0,0,192,1,-1--1--1,,1|(721,121)|
+10,14,PERFORMANCE GAIN,341,302,60,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,15,PERFORMANCE DECAY RATE,958,314,60,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,16,1,11,1,0,0,0,0,192,0,-1--1--1,,1|(719,259)|
+1,17,15,11,1,0,0,0,0,192,0,-1--1--1,,1|(900,309)|
+10,18,performance data,361,95,60,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,19,DATA PER USER,492,36,42,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,20,Market Adoption,216,34,48,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,21,20,18,1,0,0,0,0,192,0,-1--1--1,,1|(241,65)|
+1,22,19,18,1,0,0,0,0,192,0,-1--1--1,,1|(454,76)|
+10,23,design upgrades,262,179,45,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,24,DESIGN UPGRADE GAIN,149,270,61,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,25,24,23,1,0,0,0,0,192,0,-1--1--1,,1|(213,244)|
+1,26,18,23,1,0,0,0,0,192,0,-1--1--1,,1|(340,132)|
+10,27,customer satisfaction,897,99,53,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,28,1,27,1,0,0,0,0,192,0,-1--1--1,,1|(815,152)|
+1,29,23,6,1,0,0,0,0,192,0,-1--1--1,,1|(358,249)|
+1,30,14,6,1,0,0,0,0,192,0,-1--1--1,,1|(438,311)|
+1,31,1,6,1,0,0,0,0,192,0,-1--1--1,,1|(640,250)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Circular Design
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,100,0
+10,1,Circular Design,793,342,42,29,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,2,48,564,341,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,3,5,2,100,0,0,22,0,192,0,-1--1--1,,1|(615,341)|
+1,4,5,1,4,0,0,22,0,192,0,-1--1--1,,1|(709,341)|
+11,5,0,662,341,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,6,circular design build,662,378,58,29,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,7,48,996,342,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,8,10,1,100,0,0,22,0,192,0,-1--1--1,,1|(869,342)|
+1,9,10,7,4,0,0,22,0,192,0,-1--1--1,,1|(951,342)|
+11,10,0,910,342,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,11,circular design decay,910,379,70,29,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,12,INITIAL CIRCULAR DESIGN,922,228,79,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,13,12,1,1,0,0,0,0,192,1,-1--1--1,,1|(890,294)|
+10,14,BAU CIRCULAR DESIGN GAIN,392,468,68,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,15,design upgrades norm,461,272,72,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,16,r and d push,551,203,59,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,17,BAU CIRCULAR DESIGN DECAY RATE,1077,578,68,42,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,18,1,11,1,0,0,0,0,192,0,-1--1--1,,1|(824,406)|
+10,19,design upgrades,354,198,51,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,20,DESIGN UPGRADE REFERENCE,352,341,42,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,21,19,15,1,0,0,0,0,192,0,-1--1--1,,1|(359,244)|
+1,22,20,15,1,0,0,0,0,192,0,-1--1--1,,1|(406,333)|
+10,23,R and D investment,474,98,58,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,24,BAU R AND D NORMAL,582,42,61,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,25,23,16,1,0,0,0,0,192,0,-1--1--1,,1|(527,145)|
+1,26,1,6,1,0,0,0,0,192,0,-1--1--1,,1|(740,416)|
+1,27,16,6,1,0,0,0,0,192,0,-1--1--1,,1|(549,257)|
+1,28,15,6,1,0,0,0,0,192,0,-1--1--1,,1|(496,325)|
+10,29,CIRCULAR DESIGN GAIN,552,471,61,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,30,14,29,1,0,0,0,0,192,0,-1--1--1,,1|(459,519)|
+1,31,29,6,1,0,0,0,0,192,0,-1--1--1,,1|(623,439)|
+10,32,CIRCULAR DESIGN DECAY RATE,1027,461,83,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,33,17,32,1,0,0,0,0,192,0,-1--1--1,,1|(1077,521)|
+1,34,32,11,1,0,0,0,0,192,0,-1--1--1,,1|(1012,402)|
+10,35,R AND D NORMAL,723,179,42,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,36,24,35,1,0,0,0,0,192,0,-1--1--1,,1|(604,126)|
+1,37,35,16,1,0,0,0,0,192,0,-1--1--1,,1|(654,226)|
+10,38,IMPLEMENTATION DATE,796,490,83,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,39,IMPLEMENTATION TIME,820,577,83,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,40,SENSITIVITY ANALYSIS MULTIPLIER,827,655,54,42,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,41,38,29,1,0,0,0,0,192,0,-1--1--1,,1|(729,527)|
+1,42,39,29,1,0,0,0,0,192,0,-1--1--1,,1|(726,611)|
+1,43,40,29,1,0,0,0,0,192,0,-1--1--1,,1|(671,676)|
+1,44,38,32,1,0,0,0,0,192,0,-1--1--1,,1|(917,512)|
+1,45,39,32,1,0,0,0,0,192,0,-1--1--1,,1|(943,568)|
+1,46,40,32,1,0,0,0,0,192,0,-1--1--1,,1|(952,628)|
+10,47,IMPLEMENTATION DATE,755,25,81,42,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,48,IMPLEMENTATION TIME,921,65,81,42,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,49,SENSITIVITY ANALYSIS MULTIPLIER,945,153,60,42,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,50,47,35,1,0,0,0,0,192,0,-1--1--1,,1|(720,87)|
+1,51,48,35,1,0,0,0,0,192,0,-1--1--1,,1|(819,98)|
+1,52,49,35,1,0,0,0,0,192,0,-1--1--1,,1|(865,135)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*R and D Investment
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,100,0
+10,1,R and D investment,709,395,52,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,R AND D BASE,587,304,42,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,3,BAU R AND D PROFIT SENSITIVITY,288,390,87,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,4,BAU R AND D PRESSURE SENSITIVITY,1111,328,61,42,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,5,pressure for systemic change,487,527,78,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,6,5,1,1,0,0,0,0,192,0,-1--1--1,,1|(611,487)|
+1,7,2,1,1,0,0,0,0,192,0,-1--1--1,,1|(662,328)|
+10,8,PRESSURE GAIN,643,594,42,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,9,eco efficiency,339,584,60,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,10,9,5,1,0,0,0,0,192,0,-1--1--1,,1|(433,573)|
+1,11,8,5,1,0,0,0,0,192,0,-1--1--1,,1|(561,590)|
+10,12,profit,715,270,37,15,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,13,12,1,1,0,0,0,0,192,0,-1--1--1,,1|(734,327)|
+10,14,R AND D PROFIT SENSITIVITY,488,393,74,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,15,3,14,1,0,0,0,0,192,0,-1--1--1,,1|(343,443)|
+1,16,14,1,1,0,0,0,0,192,0,-1--1--1,,1|(566,368)|
+10,17,R AND D PRESSURE SENSITIVITY,878,308,88,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,18,4,17,1,0,0,0,0,192,0,-1--1--1,,1|(1002,371)|
+1,19,17,1,1,0,0,0,0,192,0,-1--1--1,,1|(825,363)|
+10,20,IMPLEMENTATION DATE,588,182,81,42,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,21,IMPLEMENTATION TIME,579,106,81,42,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,22,SENSITIVITY ANALYSIS MULTIPLIER,564,20,60,42,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,23,20,14,1,0,0,0,0,192,0,-1--1--1,,1|(501,236)|
+1,24,21,14,1,0,0,0,0,192,0,-1--1--1,,1|(455,192)|
+1,25,22,14,1,0,0,0,0,192,0,-1--1--1,,1|(407,161)|
+1,26,20,17,1,0,0,0,0,192,0,-1--1--1,,1|(735,181)|
+1,27,21,17,1,0,0,0,0,192,0,-1--1--1,,1|(761,139)|
+1,28,22,17,1,0,0,0,0,192,0,-1--1--1,,1|(733,71)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Profit
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,100,0
+10,1,sales,260,208,42,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,Market Adoption,1257,335,48,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,3,UNITS PER CUSTOMER,110,253,52,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,4,3,1,1,0,0,0,0,192,0,-1--1--1,,1|(186,253)|
+10,5,adoption rate,123,139,48,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,6,5,1,1,0,0,0,0,192,0,-1--1--1,,1|(150,177)|
+10,7,manufacturing costs,701,144,73,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,8,revenue,401,277,42,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,9,profit,595,266,42,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,10,1,8,1,0,0,0,0,192,0,-1--1--1,,1|(287,244)|
+1,11,1,9,1,0,0,0,0,192,0,-1--1--1,,1|(302,331)|
+1,12,7,9,1,0,0,0,0,192,0,-1--1--1,,1|(664,235)|
+1,13,8,9,1,0,0,0,0,192,0,-1--1--1,,1|(491,300)|
+10,14,customer satisfaction,236,119,58,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,15,14,1,1,0,0,0,0,192,0,-1--1--1,,1|(224,168)|
+10,16,BASE COST,763,-165,61,15,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,17,manufacturing costs,318,-38,74,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,18,DEMAND PRICE ELASTICITY,175,8,76,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,19,Price,432,125,35,15,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,20,19,8,1,0,0,0,0,192,0,-1--1--1,,1|(389,181)|
+10,21,Retained Earnings,906,302,42,29,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,22,48,701,306,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,23,25,22,100,0,0,22,0,192,0,-1--1--1,,1|(746,306)|
+1,24,25,21,4,0,0,22,0,192,0,-1--1--1,,1|(828,306)|
+11,25,0,787,306,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,26,annual profit,787,336,60,22,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,27,9,26,1,0,0,0,0,192,0,-1--1--1,,1|(636,317)|
+10,28,INITIAL RETAINED EARNINGS,954,189,79,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,29,28,21,1,0,0,0,0,192,1,-1--1--1,,1|(957,225)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Material Recovery
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,100,0
+10,1,Material Recovery,693,92,42,29,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,2,48,448,92,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,3,5,2,100,0,0,22,0,192,0,-1--1--1,,1|(503,92)|
+1,4,5,1,4,0,0,22,0,192,0,-1--1--1,,1|(605,92)|
+11,5,0,554,92,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,6,recovery build,554,129,42,29,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,7,48,913,92,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,8,10,1,100,0,0,22,0,192,0,-1--1--1,,1|(774,92)|
+1,9,10,7,4,0,0,22,0,192,0,-1--1--1,,1|(864,92)|
+11,10,0,819,92,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,11,recovery decay,819,129,42,29,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,12,BAU RECOVERY GAIN,273,190,71,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,13,BAU RECOVERY DECAY RATE,1072,257,71,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,14,1,11,1,0,0,0,0,192,0,-1--1--1,,1|(712,146)|
+10,15,INITIAL MATERIAL RECOVERY,685,-28,79,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,16,15,1,1,0,0,0,0,192,1,-1--1--1,,1|(673,10)|
+10,17,Circular Design,382,21,42,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,18,17,6,1,0,0,0,0,192,0,-1--1--1,,1|(420,121)|
+1,19,1,6,1,0,0,0,0,192,0,-1--1--1,,1|(654,157)|
+10,20,eco efficiency,937,-69,59,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,21,ECO EFFICIENCY BASE,1094,3,42,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,22,ECO EFFICIENCY SENSITIVITY,1083,-123,50,26,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,23,1,20,1,0,0,0,0,192,0,-1--1--1,,1|(846,31)|
+1,24,21,20,1,0,0,0,0,192,0,-1--1--1,,1|(1023,-5)|
+1,25,22,20,1,0,0,0,0,192,0,-1--1--1,,1|(1009,-122)|
+10,26,RECOVERY GAIN,495,214,49,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,27,12,26,1,0,0,0,0,192,0,-1--1--1,,1|(349,245)|
+1,28,26,6,1,0,0,0,0,192,0,-1--1--1,,1|(529,179)|
+10,29,RECOVERY DECAY RATE,885,257,57,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,30,13,29,1,0,0,0,0,192,0,-1--1--1,,1|(1033,302)|
+1,31,29,11,1,0,0,0,0,192,0,-1--1--1,,1|(884,197)|
+10,32,IMPLEMENTATION DATE,670,263,81,42,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,33,IMPLEMENTATION TIME,668,367,81,42,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,34,SENSITIVITY ANALYSIS MULTIPLIER,665,453,60,42,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,35,32,26,1,0,0,0,0,192,0,-1--1--1,,1|(571,261)|
+1,36,32,29,1,0,0,0,0,192,0,-1--1--1,,1|(780,291)|
+1,37,33,26,1,0,0,0,0,192,0,-1--1--1,,1|(550,327)|
+1,38,33,29,1,0,0,0,0,192,0,-1--1--1,,1|(789,350)|
+1,39,34,26,1,0,0,0,0,192,0,-1--1--1,,1|(514,357)|
+1,40,34,29,1,0,0,0,0,192,0,-1--1--1,,1|(823,396)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Manufacturing Costs
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,100,0
+10,1,manufacturing costs,300,444,68,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,BASE COST,209,306,44,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,3,Market Adoption,490,288,48,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,4,adoption rate,1220,562,48,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,5,raw material cost addition,565,475,59,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,6,5,1,1,0,0,0,0,192,0,-1--1--1,,1|(474,488)|
+10,7,sales,1250,623,36,15,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,8,INITIAL MARKET ADOPTION,655,348,77,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,9,market adoption index,447,390,70,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,10,3,9,1,0,0,0,0,192,0,-1--1--1,,1|(485,330)|
+1,11,8,9,1,0,0,0,0,192,0,-1--1--1,,1|(573,370)|
+1,12,9,1,1,0,0,0,0,192,0,-1--1--1,,1|(409,431)|
+10,13,raw material prices,686,549,65,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,14,13,5,1,0,0,0,0,192,0,-1--1--1,,1|(675,494)|
+10,15,sales,1229,499,36,15,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,16,MATERIAL COST SHARE,535,578,57,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,17,16,5,1,0,0,0,0,192,0,-1--1--1,,1|(536,526)|
+10,18,cooperation in logistics,201,540,61,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,19,BASE COST MULTIPLER,108,482,72,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,20,19,1,1,0,0,0,0,192,0,-1--1--1,,1|(186,448)|
+10,21,BASE RAW MATERIAL PRICES,86,378,85,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,22,2,1,1,0,0,0,0,192,0,-1--1--1,,1|(259,371)|
+10,23,LEARNING RATE,335,280,48,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,24,23,1,1,0,0,0,0,192,0,-1--1--1,,1|(351,350)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Raw Materials
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,100,0
+10,1,raw material prices,311,207,59,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,BASE RAW MATERIAL PRICES,355,95,72,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,3,Market Adoption,1435,305,48,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,5,DEMAND PRICE ELASTICITY,220,33,71,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,6,virgin material demand,661,135,79,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,7,BASELINE VIRGIN DEMAND,560,225,67,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,8,2,1,1,0,0,0,0,192,0,-1--1--1,,1|(384,143)|
+1,9,6,1,1,0,0,0,0,192,0,-1--1--1,,1|(553,182)|
+1,10,7,1,1,0,0,0,0,192,0,-1--1--1,,1|(479,250)|
+10,11,sales,818,44,36,15,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,12,adoption rate,1426,237,48,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,13,VIRGIN PER UNIT,851,119,44,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,14,Material Recovery,820,213,48,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,15,11,6,1,0,0,0,0,192,0,-1--1--1,,1|(720,75)|
+1,16,13,6,1,0,0,0,0,192,0,-1--1--1,,1|(782,95)|
+1,17,14,6,1,0,0,0,0,192,0,-1--1--1,,1|(794,168)|
+10,18,RAW MATERIAL PRICE SENS,515,43,70,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,19,18,1,1,0,0,0,0,192,0,-1--1--1,,1|(485,121)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Affordability
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,100,0
+10,1,BAU INVEST FRACTION,18,-226,54,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,INVEST DELAY,147,38,55,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,3,profit,200,-182,37,15,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,4,CAPITAL NORM,862,-70,42,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,5,up front customers costs,702,75,77,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,6,BASE UPFRONT,930,54,72,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,7,BAU REFILL INCENTIVE EFFECT,1136,119,83,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,8,COST NORM,391,166,57,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,9,Capital Investment,403,-55,52,29,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,10,48,162,-55,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,11,13,10,100,0,0,22,0,192,0,-1--1--1,,1|(213,-55)|
+1,12,13,9,4,0,0,22,0,192,0,-1--1--1,,1|(309,-55)|
+11,13,0,261,-55,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,14,change in capital investment,261,-18,78,29,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,15,desired capital investment,154,-96,68,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,16,INITIAL CAPITAL INVESTMENT,479,-129,68,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,17,16,9,1,0,0,0,0,192,1,-1--1--1,,1|(487,-80)|
+1,18,2,14,1,0,0,0,0,192,0,-1--1--1,,1|(242,29)|
+1,19,9,14,1,0,0,0,0,192,0,-1--1--1,,1|(371,8)|
+1,20,3,15,1,0,0,0,0,192,0,-1--1--1,,1|(163,-149)|
+1,21,15,14,1,0,0,0,0,192,0,-1--1--1,,1|(185,-45)|
+10,22,affordability,534,128,56,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,23,5,22,1,0,0,0,0,192,0,-1--1--1,,1|(611,77)|
+1,24,8,22,1,0,0,0,0,192,0,-1--1--1,,1|(444,133)|
+10,25,refillable packaging adoption,654,-126,47,42,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,26,9,25,1,0,0,0,0,192,0,-1--1--1,,1|(521,-46)|
+1,27,4,25,1,0,0,0,0,192,0,-1--1--1,,1|(791,-71)|
+1,28,6,5,1,0,0,0,0,192,0,-1--1--1,,1|(820,22)|
+1,29,25,5,1,0,0,0,0,192,0,-1--1--1,,1|(688,-41)|
+10,30,Price,723,206,35,15,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,31,BASE PRICE,587,215,33,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,32,31,5,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,33,30,5,1,0,0,0,0,192,0,-1--1--1,,1|(706,163)|
+10,34,INVEST FRACTION,8,-92,47,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,35,1,34,1,0,0,0,0,192,0,-1--1--1,,1|(39,-179)|
+1,36,34,15,1,0,0,0,0,192,0,-1--1--1,,1|(59,-49)|
+10,37,REFILL INCENTIVE EFFECT,908,142,80,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,38,7,37,1,0,0,0,0,192,0,-1--1--1,,1|(1053,86)|
+1,39,37,5,1,0,0,0,0,192,0,-1--1--1,,1|(798,130)|
+10,40,IMPLEMENTATION DATE,-185,-225,81,42,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,41,IMPLEMENTATION TIME,-256,-121,81,42,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,42,SENSITIVITY ANALYSIS MULTIPLIER,-173,-20,60,42,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,43,40,34,1,0,0,0,0,192,0,-1--1--1,,1|(-43,-186)|
+1,44,41,34,1,0,0,0,0,192,0,-1--1--1,,1|(-136,-156)|
+1,45,42,34,1,0,0,0,0,192,0,-1--1--1,,1|(-105,-95)|
+10,46,IMPLEMENTATION DATE,1127,228,81,42,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,47,IMPLEMENTATION TIME,1072,291,81,42,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,48,SENSITIVITY ANALYSIS MULTIPLIER,871,293,60,42,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,49,46,37,1,0,0,0,0,192,0,-1--1--1,,1|(1081,169)|
+1,50,47,37,1,0,0,0,0,192,0,-1--1--1,,1|(1045,227)|
+1,51,48,37,1,0,0,0,0,192,0,-1--1--1,,1|(926,245)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Trust and Cooperation
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,100,0
+10,1,TRUST BASE,389,118,55,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,TRUST SENSITIVITY TO PROFIT,538,56,83,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,3,profit,810,56,37,15,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,4,PROFIT NORM,669,37,42,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,5,cooperation in logistics,188,254,57,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,6,COOP BASE,53,164,53,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,7,COOP TRUST SENS,251,165,59,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,8,6,5,1,0,0,0,0,192,0,-1--1--1,,1|(77,206)|
+1,9,7,5,1,0,0,0,0,192,0,-1--1--1,,1|(251,205)|
+10,10,Inter Firm Trust,401,217,46,29,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,11,48,678,217,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,12,14,11,100,0,0,22,0,192,0,-1--1--1,,1|(615,217)|
+1,13,14,10,4,0,0,22,0,192,0,-1--1--1,,1|(499,217)|
+11,14,0,557,217,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,15,change in inter firm trust,557,254,69,29,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,16,TRUST DELAY,721,335,61,22,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,17,1,10,1,0,0,0,0,192,1,-1--1--1,,1|(374,148)|
+10,18,desired inter firm trust,656,145,60,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,19,1,18,1,0,0,0,0,192,0,-1--1--1,,1|(491,115)|
+1,20,2,18,1,0,0,0,0,192,0,-1--1--1,,1|(609,98)|
+1,21,4,18,1,0,0,0,0,192,0,-1--1--1,,1|(676,88)|
+1,22,3,18,1,0,0,0,0,192,0,-1--1--1,,1|(776,105)|
+1,23,18,15,1,0,0,0,0,192,0,-1--1--1,,1|(639,213)|
+1,24,10,15,1,0,0,0,0,192,0,-1--1--1,,1|(445,279)|
+1,25,16,15,1,0,0,0,0,192,0,-1--1--1,,1|(636,322)|
+1,26,10,5,1,0,0,0,0,192,0,-1--1--1,,1|(344,281)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Price
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,100,0
+10,1,Price,864,282,53,33,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,2,48,590,284,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,3,5,2,100,0,0,22,0,192,0,-1--1--1,,1|(649,284)|
+1,4,5,1,4,0,0,22,0,192,0,-1--1--1,,1|(761,284)|
+11,5,0,705,284,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,6,price ajustment,705,321,48,29,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,7,48,859,100,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,8,10,7,100,0,0,22,0,192,0,-1--1--1,,1|(859,140)|
+1,9,10,1,4,0,0,22,0,192,0,-1--1--1,,1|(859,216)|
+11,10,0,859,178,8,6,33,3,0,0,4,0,0,0,0,0,0,0,0,0
+10,11,manufacturing cost adjustment,949,178,82,29,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,12,48,1091,282,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,13,15,1,100,0,0,22,0,192,0,-1--1--1,,1|(955,282)|
+1,14,15,12,4,0,0,22,0,192,0,-1--1--1,,1|(1043,282)|
+11,15,0,999,282,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,16,price outflow,999,312,60,22,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,17,1,6,1,0,0,0,0,192,0,-1--1--1,,1|(825,350)|
+1,18,1,16,1,0,0,0,0,192,0,-1--1--1,,1|(889,356)|
+10,19,BASE PRICE,676,180,33,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,20,19,1,1,0,0,0,0,192,1,-1--1--1,,1|(735,186)|
+10,21,minimum price,547,93,46,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,22,maximum price,720,57,48,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,23,MINIMUM PRICE MULTIPLER,387,77,74,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,24,MAXIMUM PRICE MULTIPLER,736,-39,76,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,25,manufacturing costs,1107,-42,74,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,26,DEMAND PRICE ELASTICITY,1326,32,76,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,27,23,21,1,0,0,0,0,192,0,-1--1--1,,1|(429,127)|
+1,28,24,22,1,0,0,0,0,192,0,-1--1--1,,1|(757,12)|
+1,29,19,21,1,0,0,0,0,192,0,-1--1--1,,1|(622,164)|
+1,30,19,22,1,0,0,0,0,192,0,-1--1--1,,1|(731,138)|
+10,31,manufacturing cost factor,1096,64,68,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,32,MANUFACTURING COST CHANGE RATE,1185,219,82,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,33,PRICE ADJUSTMENT RATE,567,412,85,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,34,33,6,1,0,0,0,0,192,0,-1--1--1,,1|(668,388)|
+10,35,PRICE OUTFLOW RATE,1128,410,73,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,36,35,16,1,0,0,0,0,192,0,-1--1--1,,1|(1048,384)|
+1,37,21,11,1,0,0,0,0,192,0,-1--1--1,,1|(778,111)|
+1,38,22,11,1,0,0,0,0,192,0,-1--1--1,,1|(815,74)|
+1,39,25,31,1,0,0,0,0,192,0,-1--1--1,,1|(1099,13)|
+1,40,26,31,1,0,0,0,0,192,0,-1--1--1,,1|(1232,64)|
+1,41,31,11,1,0,0,0,0,192,0,-1--1--1,,1|(988,131)|
+1,42,32,11,1,0,0,0,0,192,0,-1--1--1,,1|(1095,221)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Emissions
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,100,0
+10,1,Cumulative CO2 Emissions,698,232,68,29,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,2,48,387,229,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,3,5,2,100,0,0,22,0,192,0,-1--1--1,,1|(452,229)|
+1,4,5,1,4,0,0,22,0,192,0,-1--1--1,,1|(574,229)|
+11,5,0,513,229,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,6,CO2 emissions per year,513,266,68,29,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,7,recovered material demand,406,141,87,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,8,total material demand,223,74,63,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,9,sales,83,7,35,15,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,10,VIRGIN PER UNIT,64,135,57,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,11,9,8,1,0,0,0,0,192,0,-1--1--1,,1|(161,27)|
+1,12,10,8,1,0,0,0,0,192,0,-1--1--1,,1|(140,138)|
+1,13,8,7,1,0,0,0,0,192,0,-1--1--1,,1|(256,140)|
+10,14,Performance,362,42,60,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,15,14,7,1,0,0,0,0,192,0,-1--1--1,,1|(384,84)|
+10,16,VIRGIN EMISSIONS PER TON,211,286,83,29,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,17,RECOVERED EMISSIONS PER TON,554,72,79,37,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,18,virgin material demand,359,385,72,29,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,19,7,6,1,0,0,0,0,192,0,-1--1--1,,1|(419,196)|
+1,20,17,6,1,0,0,0,0,192,0,-1--1--1,,1|(572,132)|
+1,21,16,6,1,0,0,0,0,192,0,-1--1--1,,1|(327,304)|
+1,22,18,6,1,0,0,0,0,192,0,-1--1--1,,1|(470,360)|
+10,23,INITIAL CUMULATIVE CO2 EMISSIONS,820,126,81,42,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,24,23,1,1,0,0,0,0,192,1,-1--1--1,,1|(811,172)|
+///---\\\
+:L<%^E!@
+1:BAU.vdfx
+1:LOW CD.vdfx
+1:MED CD.vdfx
+1:HIGH CD.vdfx
+4:Time
+5:profit
+9:BAU
+19:100,4
+24:2000
+25:2035
+26:2035
+23:0
+15:0,0,0,0,0,0
+27:0,
+34:0,
+42:0
+72:0
+73:0
+95:0
+96:0
+97:0
+77:0
+78:0
+102:1
+93:0
+94:0
+92:0
+91:0
+90:0
+87:0
+75:
+43:
+103:8,8,8,3,8
+105:0,0,0,0,0,0,0,0,0,0
+104:Vensim Sans|12||0-0-0|0-0-0|-1--1--1|0-0-255|192-192-192|-1--1--1
